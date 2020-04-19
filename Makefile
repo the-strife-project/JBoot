@@ -1,22 +1,25 @@
-#OBJPATH=../../obj/JBoot
+# Do not run make outside of jotaOS!
+RESULT_PATH=../../iso/boot
 
-#ASM=nasm
-#ASMFLAGS=-f bin
+ASM=nasm
+ASMFLAGS=-f bin
+NASMPP=python3 ./nasmPP.py
 
-# TODO: THIS SHOULD BE ALL THE WAY AROUND. '.npp.asm' goes into NasmPP, '.asm' goes out.
-#NASMPP_OBJ=$(shell find . -type f -iname '*.asm' | sed 's/\.asm/\.asm.npp/g' | xargs -I {} echo "$(OBJPATH)/"{})
-#ASM_OBJ=$(shell find . -type f -iname '*.asm.npp' | sed 's/\.asm.npp/\.bin/g' | xargs -I {} echo "$(OBJPATH)/"{})
+.PHONY: build cd hdd
 
-# TODO TODO TODO JUST WANT IT TO WORK
-.PHONY: build finished
+build: cd hdd clean
 
-build:
-	nasm CD/JBoot.asm -f bin -o ../../iso/boot/CD.bin
-	./nasmPP.py HDD/stage1.asm
-	./nasmPP.py HDD/stage2.asm
-	nasm HDD/stage1.asm.npp -f bin -o ../../iso/boot/HDDs1.bin
-	nasm HDD/stage2.asm.npp -f bin -o ../../iso/boot/HDDs2.bin
+# CD will never be more than one file
+cd:
+	$(ASM) CD/JBoot.asm -o $(RESULT_PATH)/CD.bin $(ASMFLAGS)
+
+# HDD will never be more than these two files
+hdd:
+	$(NASMPP) HDD/stage1.asm
+	$(NASMPP) HDD/stage2.asm
+	$(ASM) HDD/stage1.asm.npp -o $(RESULT_PATH)/HDDs1.bin $(ASMFLAGS)
+	$(ASM) HDD/stage2.asm.npp -o $(RESULT_PATH)/HDDs2.bin $(ASMFLAGS)
+
+# Remove temporal files
+clean:
 	rm HDD/*.asm.npp
-
-finished:
-	@echo -e "\e[1;33mJBoot compiled.\e[0m"
