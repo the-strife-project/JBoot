@@ -19,8 +19,4 @@ hdd: $(RESULT_PATH)/HDDs1.bin $(RESULT_PATH)/HDDs2.bin
 $(RESULT_PATH)/HDDs%.bin: HDD/stage%.asm
 	$(NASMPP) $<
 	$(ASM) $<.npp -o $@ $(ASMFLAGS)
-
-# Remove temporal files
-clean:
-	rm HDD/*.asm.npp &> /dev/null || true
-
+	rm $<.npp
