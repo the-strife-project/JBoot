@@ -69,7 +69,8 @@ checkA20:
 
 
 
-; This is a port of JOTAFS_getrecursive from JOTAFS_readwholefile.c
+; --- JOTAFS FUNCTIONS ---
+
 ; edi <- level
 ; esi <- recBlock
 ; ecx <- i
@@ -122,6 +123,8 @@ getrecursive:
 	sub ecx, dword [esp]
 	add esp, 4
 	shr eax, cl
+	; idx %= 128;
+	and eax, 0b1111111
 
 	; uint32_t next_recBlock = contents[idx];
 	mov eax, dword [SECTOR_BUFFER + (4*eax)]
@@ -219,6 +222,9 @@ getSequentialBlock:
 
 
 
+
+
+; --- END OF JOTAFS FUNCTIONS ---
 
 
 noa20 db "A20 could not be enabled.", 0
