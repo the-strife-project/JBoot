@@ -1,3 +1,6 @@
+# ARCHIVED
+JBoot is no more. I'm using Limine now. The code you'll find in this repository will hardly be of any use, don't waste your time.
+
 # JBoot
 
 JBoot is the bootloader for jotaOS.
